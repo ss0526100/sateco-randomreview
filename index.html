@@ -49,7 +49,7 @@
           .replaceAll(' ', ',')
           .replaceAll('\n', ',')
           .split(',')
-          .filter(e => e !== '')
+          .filter(e => e.trim() !== '')
           .sort(() => Math.random() - 0.5);
 
         const text =
