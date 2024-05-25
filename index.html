@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>렌덤 리부 순서셍성기</h1>
+    <div style="display: flex; gap: 10px; flex-direction: column">
+      <p>사람이름은 ,랑 띠어쓰기랑 엔터키로 구분해요</p>
+      <p style="margin-top: -10px">다지우고에프5누르면 기본값들어가요</p>
+      <textarea name="textarea" id="names" style="height: 100px"></textarea>
+      <button id="button">이거 누르면 렌덤으로 순서를 만드러줘요</button>
+      <div
+        id="result"
+        style="background-color: white; height: 300px; border: 1px solid"
+      >
+        결과가이 곳에나와여
+      </div>
+      <p id="status">위에클릭시복사가 되요</p>
+    </div>
+    <script>
+      const button = document.getElementById('button');
+      const textArea = document.getElementById('names');
+      const result = document.getElementById('result');
+      const statusEl = document.getElementById('status');
+
+      let isClicked = false;
+
+      const LOCAL_STORAGE_KEY = '뭘봐';
+
+      const NAMES = ['낙타', '마스터위', '소파', '수야', '치코', '토다리'];
+
+      const lsValue = localStorage.getItem(LOCAL_STORAGE_KEY);
+      textArea.value = lsValue;
+      if (lsValue === null || lsValue.trim() === '') {
+        localStorage.setItem(LOCAL_STORAGE_KEY, NAMES.join(','));
+        textArea.value = NAMES.join(',');
+      }
+
+      textArea.addEventListener('keydown', e => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, e.target.value);
+      });
+
+      button.addEventListener('click', () => {
+        isClicked = true;
+        const names = textArea.value
+          .replaceAll(' ', ',')
+          .replaceAll('\n', ',')
+          .split(',')
+          .filter(e => e !== '')
+          .sort(() => Math.random() - 0.5);
+
+        const text =
+          '[리뷰어 -> 리뷰이 1, 리뷰이2]\n' +
+          names
+            .map(
+              (name, i) =>
+                name + ' -> ' + names.at(i - 1) + ', ' + names.at(i - 2)
+            )
+            .join('\n');
+
+        result.innerText = text;
+      });
+
+      result.addEventListener('click', e => {
+        e.preventDefault();
+        if (!isClicked) return;
+        navigator.clipboard.writeText(result.innerText);
+        statusEl.innerText = '복사완료!';
+      });
+    </script>
+  </body>
+</html>
